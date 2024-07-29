@@ -1,23 +1,61 @@
 import { FormEvent, useState } from 'react';
 import './TaskForm.css';
+import { Task } from '../../models/Task';
+import { api } from '../../api/api';
 
-export function TaskForm() {
+interface TaskFormProps {
+    closeModal: () => void,
+    reloadTasks: () => void,
+    taskToUpdate?: Task
+}
+
+export function TaskForm({closeModal, reloadTasks, taskToUpdate}: TaskFormProps) {
     const taskStatus = ['Pendente', 'Em andamento', 'Concluída', 'Atrasada', 'Cancelada']
 
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [deadline, setDeadline] = useState('');
-    const [status, setStatus] = useState(taskStatus[1])
+    const [title, setTitle] = useState(taskToUpdate?.title ?? '');
+    const [description, setDescription] = useState(taskToUpdate?.title ?? '');
+    const [deadline, setDeadline] = useState(taskToUpdate?.deadline.toString() ?? '');
+    const [status, setStatus] = useState(taskToUpdate?.status ?? taskStatus[1])
 
-    function saveTask(event: FormEvent) {
+    async function saveTask(event: FormEvent) {
         event.preventDefault();
 
-        console.log({
+        const task: Task = {
             title,
             description,
-            deadline,
+            deadline: new Date(deadline),
             status
-        });
+        };
+
+        if(taskToUpdate) {
+            updateTask(task);
+            return;
+        };
+
+        const res = await api.post('/task', task);
+        
+        if(res.status == 201) {
+            alert('A tarefa foi criada')
+            closeModal();
+            reloadTasks();
+        } else  {
+            alert('Não foi possivel criar a tarefa')
+        }
+    }
+
+    async function updateTask(task: Task) {
+        const id = taskToUpdate?.id;
+        const res = await api.put(`/task/${id}`, {id, ...task});
+
+        console.log(res);
+        
+        if(res.status == 200) {
+            alert('A tarefa foi atualizada com sucesso');
+            closeModal();
+            reloadTasks();
+        } else  {
+            alert('Não foi possivel atualizar a tarefa');
+        }
     }
 
     return (

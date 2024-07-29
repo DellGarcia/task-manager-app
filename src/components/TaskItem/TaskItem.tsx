@@ -1,28 +1,49 @@
 import { Edit, Trash2 } from 'react-feather';
 
 import './TaskItem.css';
+import { Task } from '../../models/Task';
+import { api } from '../../api/api';
 
-export function TaskItem() {
+interface TaskItemProps {
+    task: Task,
+    taskReload: () => void,
+    setTaskToUpdate: (task: Task) => void,
+    openModal: () => void
+}
+
+export function TaskItem({ task, taskReload, setTaskToUpdate, openModal }: TaskItemProps) {
+    async function handleDeleteTask(id?: number) {
+        if(id) {
+            await api.delete(`/task/${id}`);
+            taskReload();
+        }
+    }
+
+    async function handleUpdateTask(task: Task) {
+        setTaskToUpdate(task);
+        openModal();
+    }
+
     return (
         <li className="task-item">
             <div className='task-item-header'>
                 <div className='icon-button bg-red'>
-                    <Edit/>
+                    <Edit onClick={() => handleUpdateTask(task)}/>
                 </div>
                 <div className='icon-button bg-red'>
-                    <Trash2 />
+                    <Trash2 onClick={() => handleDeleteTask(task.id)}/>
                 </div>
             </div>
 
-            <h3>Task Title</h3>
+            <h3>{task.title}</h3>
 
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+            <p>{task.description}</p>
 
-            <p>Criado em: 20/07/2024</p>
+            <p>Criado em: {task.createdAt?.toString()}</p>
 
-            <p>Data de vencimento: </p>
+            <p>Data de vencimento: {task.deadline.toString()}</p>
 
-            <div>Status: Pendente</div>
+            <div>Status: {task.status}</div>
         </li>
     )
 }
