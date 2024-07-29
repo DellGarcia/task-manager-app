@@ -1,0 +1,36 @@
+.task-item {
+    position: relative;
+    width: 90%;
+    background-color: #333;
+    list-style: none;
+    color: ghostwhite;
+    border-radius: 15px;
+    padding: 20px;
+    padding-top: 10px;
+    margin-bottom: 25px;
+    margin-right: 20px;
+}
+
+
+.task-item-header {
+    position: absolute;
+    top: -15px;
+    right: -10px;
+    display: flex;
+}
+
+.icon-button {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 10px;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    padding: 0;
+}
+
+.bg-red {
+    background-color: #F33;
+}
