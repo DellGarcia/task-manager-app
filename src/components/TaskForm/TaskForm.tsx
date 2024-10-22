@@ -6,15 +6,16 @@ import { api } from '../../api/api';
 interface TaskFormProps {
     closeModal: () => void,
     reloadTasks: () => void,
-    taskToUpdate?: Task
+    taskToUpdate?: Task,
+    setTaskToUdpdate?: ({}: any) => void
 }
 
-export function TaskForm({closeModal, reloadTasks, taskToUpdate}: TaskFormProps) {
+export function TaskForm({closeModal, reloadTasks, taskToUpdate, setTaskToUdpdate}: TaskFormProps) {
     const taskStatus = ['Pendente', 'Em andamento', 'Concluída', 'Atrasada', 'Cancelada']
 
     const [title, setTitle] = useState(taskToUpdate?.title ?? '');
     const [description, setDescription] = useState(taskToUpdate?.title ?? '');
-    const [deadline, setDeadline] = useState(taskToUpdate?.deadline.toString() ?? '');
+    const [deadline, setDeadline] = useState(taskToUpdate?.deadline?.toString() ?? '');
     const [status, setStatus] = useState(taskToUpdate?.status ?? taskStatus[1])
 
     async function saveTask(event: FormEvent) {
@@ -27,8 +28,10 @@ export function TaskForm({closeModal, reloadTasks, taskToUpdate}: TaskFormProps)
             status
         };
 
-        if(taskToUpdate) {
+        if(taskToUpdate && setTaskToUdpdate) {
+            console.log(task);
             updateTask(task);
+            setTaskToUdpdate(null);
             return;
         };
 

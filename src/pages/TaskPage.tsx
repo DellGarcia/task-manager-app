@@ -43,6 +43,7 @@ export default function TaskPage() {
 
     useEffect(() => {
         getTasks()
+        setTaskToUpdate(null);
     }, []);
 
     async function getTasks() {
@@ -70,7 +71,7 @@ export default function TaskPage() {
             >
                 {
                     taskToUpdate ? 
-                    <TaskForm reloadTasks={getTasks} closeModal={closeModal} taskToUpdate={taskToUpdate}/>:
+                    <TaskForm reloadTasks={getTasks} closeModal={closeModal} taskToUpdate={taskToUpdate} setTaskToUdpdate={setTaskToUpdate}/>:
                     <TaskForm reloadTasks={getTasks} closeModal={closeModal}/>
                 }
             </Modal>
